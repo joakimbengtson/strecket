@@ -25,7 +25,7 @@
   "scripts": {
     "start": "make react-start",
 	"build": "make react-build",
-	"commit": "make commit",
+	"commit": "make git-commit",
     "deploy": "make deploy"
   },
   "eslintConfig": {
