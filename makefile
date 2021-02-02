@@ -3,17 +3,21 @@ GITHUB_PROJECT=strecket
 GITHUB_URL=https://github.com/$(GITHUB_USER)/$(GITHUB_PROJECT)
 GITHUB_COMMIT_MESSAGE=-
 
+SCP_PATH=/var/www/html/strecket
+SCP_USER=root
+SCP_HOST=85.24.185.150
+
 all:
 	@echo Specify something
 
-start:
+react-start:
 	npx react-scripts start
 
-buildx:
+react-build:
 	npx react-scripts build
 
 deploy:
-	scp -r ./build/* root@pi-kato:/var/www/html/strecket
+	scp -r ./build/* $(SCP_USER)@$(SCP_HOST):$(SCP_PATH)
 
 git-commit:
 	git add -A && git commit -m $(GITHUB_COMMIT_MESSAGE) && git push
