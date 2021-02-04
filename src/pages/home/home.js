@@ -375,7 +375,7 @@ export default class extends React.Component {
 
                     <Container.Row>
 						<Button margin={{left:1, right:1}} color="success" size="lg" href="#new-stock">
-							Nytt köp
+							Ny...
 						</Button>
 
                         <span>{' '}</span>
@@ -389,10 +389,6 @@ export default class extends React.Component {
                         <span>{' '}</span>
                         <Button margin={{left:1, right:1}} className="btn-danger" size="lg" href="#looker">
                             Leta
-                        </Button>
-                        <span>{'       '}</span>
-                        <Button margin={{left:1, right:1}} className="btn-warning" size="lg" href="#candidates">
-                            Bubbles
                         </Button>
                         
                     </Container.Row>
