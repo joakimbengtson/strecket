@@ -63,6 +63,8 @@ export default  class Home extends React.Component {
 									var noStocks;									
 									var q = rawDump.earnings.financialsChart.quarterly;
 									
+									console.log("rawDump:", rawDump);
+									
 									console.log("---Ticker:", rawDump.price.symbol);
 									console.log("earnings=", q[0].earnings, q[1].earnings, q[2].earnings, q[3].earnings);													
 									
@@ -77,7 +79,8 @@ export default  class Home extends React.Component {
 										
 										console.log("increase earnings=", incr1.toFixed(2), incr2.toFixed(2), incr3.toFixed(2));
 										console.log("increase revenue=", incr1Revenue.toFixed(2), incr2Revenue.toFixed(2), incr3Revenue.toFixed(2));
-										
+
+/*										
 										if (typeof rawDump.financialData !== 'undefined') {
 											console.log("cashflow", rawDump.financialData.freeCashflow);
 											fcf = rawDump.financialData.freeCashflow;
@@ -87,12 +90,13 @@ export default  class Home extends React.Component {
 											console.log("shares", rawDump.defaultKeyStatistics.sharesOutstanding);
 											noStocks = rawDump.defaultKeyStatistics.sharesOutstanding;
 										}
-										
+*/										
 										// Växer varje kvartal
 										var grows = (incr3Revenue > incr2Revenue && incr2Revenue > incr1Revenue);
 										
 										if (incr1 > increaseLimit && incr2 > increaseLimit && incr3 > increaseLimit) {
-											var candidate = {ticker:rawDump.price.symbol, incr1:incr1, incr2:incr2, incr3:incr3, incr1Revenue:incr1Revenue, incr2Revenue:incr2Revenue, incr3Revenue:incr3Revenue, grows:grows, fcf:fcf, noStocks:noStocks};
+											console.log("Kandidat ---->", rawDump.price.symbol);
+											var candidate = {ticker:rawDump.price.symbol, incr1:incr1, incr2:incr2, incr3:incr3, incr1Revenue:incr1Revenue, incr2Revenue:incr2Revenue, incr3Revenue:incr3Revenue, grows:grows};
 
 											self.setState({stocks: this.state.stocks.concat(candidate)});	
 										}										
@@ -156,12 +160,6 @@ export default  class Home extends React.Component {
                     <td style={{textAlign: "right"}}>
                         {(stock.incr3Revenue*100).toFixed(2)+'%'}
                     </td>                    
-                    <td style={{textAlign: "right"}}>
-                        {stock.fcf}
-                    </td>                    
-                    <td style={{textAlign: "right"}}>
-                        {stock.noStocks}
-                    </td>                                        
                     <td style={{textAlign: "center"}}>
                         {stock.grows ? (
 	                        <Badge color="success">Växer</Badge>
@@ -178,7 +176,7 @@ export default  class Home extends React.Component {
             if (this.state.error)
                 var items = (
                     <tr>
-                        <td colSpan="10">
+                        <td colSpan="8">
                             <center>{"Kan inte nå servern: " + self.state.error.message}</center>
                         </td>
                     </tr>
@@ -186,7 +184,7 @@ export default  class Home extends React.Component {
             else
                 var items = (
                     <tr>
-                        <td colSpan="10">
+                        <td colSpan="8">
                             <center>{"Inga aktier"}</center>
                         </td>
                     </tr>
@@ -198,7 +196,7 @@ export default  class Home extends React.Component {
                 <Table striped={true} bordered={true} responsive={true}>
                     <thead>
                         <tr>
-                        	<td colSpan="10">
+                        	<td colSpan="8">
                             	<center><h1>Mer än {this.getIncreaseLimit() + "% ökning per kvartal"}</h1></center>
 							</td>
 						</tr>
@@ -211,8 +209,6 @@ export default  class Home extends React.Component {
                             <th style={{textAlign: "right"}}>Ökning omsättning q1</th>
                             <th style={{textAlign: "right"}}>Ökning omsättning q2</th>
                             <th style={{textAlign: "right"}}>Ökning omsättning q3</th>
-                            <th style={{textAlign: "right"}}>Fcf</th>
-                            <th style={{textAlign: "right"}}>Antal aktier</th>                                                        
                             <th>Växer varje kvartal</th>
                         </tr>
                     </thead>

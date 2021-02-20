@@ -15,6 +15,7 @@ var _ATR;
 var _stockID;
 var _stockQuote;
 var _sma20 = 0;
+var _sma50 = 0;
 var _maxkurs = 0;
 var _xrate = config.rates.rateUSD;
 var _fxTicker = ""; 
@@ -97,12 +98,10 @@ export default class extends React.Component {
         this.handleKeyPress = this.handleKeyPress.bind(this);
         this.handleOptionChange = this.handleOptionChange.bind(this);
         
-        this.state = {focus:'stockticker', helpATR: "", helpReport: "", helpPercentage: "", helpQuote: "", title: "Ange källa", selectedOption: "radioATR", sourceID: null, sources: [], inputs:{}, smaColor:"light", showAlert: false};
+        this.state = {focus:'stockticker', helpATR: "", helpReport: "", helpPercentage: "", helpQuote: "", title: "Ange källa", selectedOption: "radioATR", sourceID: null, sources: [], inputs:{}, sma20Color:"light", sma50Color:"light", showAlert: false};
     }
 
 	componentDidMount() {
-		return;
-
         var self = this;
         var stoplossOption = "radioATR";
         var helpATR = "";
@@ -149,7 +148,8 @@ export default class extends React.Component {
 							self.state.inputs.stockcount   = body[0].antal;
 							self.state.inputs.stockbuydate = (body[0].köpt_datum).substring(0, 10);							
 							_maxkurs                       = body[0].maxkurs; 		
-							_sma20                         = body[0].SMA20; 		
+							_sma20                         = body[0].SMA20;
+							_sma50                         = body[0].SMA50;
 		
 		                    if (body[0].stoplossTyp == config.stoplossType.StoplossTypeATR) {
 								self.state.inputs.atrmultiple = body[0].ATRMultipel;
@@ -163,9 +163,13 @@ export default class extends React.Component {
 								self.state.inputs.stoplosspercentage = body[0].stoplossProcent * 100;
 		                        stoplossOption = "radioPercent";
 								self.setPercentageHelp(body[0].stoplossProcent, stoplossOption);		                        
+		                    } else if (body[0].stoplossTyp == config.stoplossType.StoplossTypeSMA20) {
+		                        stoplossOption = "radioSMA20";
+								self.setPercentageHelp(_sma20, stoplossOption);      
+								
 		                    } else {
-		                        stoplossOption = "radioSMA";			                    
-								self.setPercentageHelp(_sma20, stoplossOption);		                        		                        
+		                        stoplossOption = "radioSMA50";			                    
+								self.setPercentageHelp(_sma50, stoplossOption);		                        		                        
 		                    }
 		                    				
 		                    helpATR = ((body[0].ATR / _stockQuote) * 100).toFixed(2) + "% (" + body[0].ATR.toFixed(2) + ")";
@@ -249,12 +253,15 @@ export default class extends React.Component {
         } else if (this.state.selectedOption == "radioPercent") {
             rec.stoplossTyp = config.stoplossType.StoplossTypePercent;
             rec.stoplossProcent = this.state.inputs.stoplosspercentage/100;
-        } else {
+        } else if (this.state.selectedOption == "radioSMA20") {
             rec.stoplossTyp = config.stoplossType.StoplossTypeSMA20;
+        } else {
+            rec.stoplossTyp = config.stoplossType.StoplossTypeSMA50;
         }
 
-        rec.ATR = _ATR;
+        rec.ATR   = _ATR;
         rec.SMA20 = _sma20;
+        rec.SMA50 = _sma50;
 
         var options = {
             uri: "http://85.24.185.150:3000/save",
@@ -295,11 +302,18 @@ export default class extends React.Component {
 				_perc = val;
 				break;
 			
-			case "radioSMA":
+			case "radioSMA20":
 				if (_sma20 > _stockQuote)
 					_perc = '-';
 				else
 					_perc = (((_stockQuote/_sma20)-1)*100).toFixed(2);
+				break;
+
+			case "radioSMA50":
+				if (_sma50 > _stockQuote)
+					_perc = '-';
+				else
+					_perc = (((_stockQuote/_sma50)-1)*100).toFixed(2);
 				break;
 
 			default:
@@ -415,12 +429,14 @@ export default class extends React.Component {
 	                        _ATR = body.misc.atr14;
 							_stockQuote = (body.price.regularMarketPrice).toFixed(2);
 							_sma20 = body.misc.sma20;
+							_sma50 = body.misc.sma50;
 							
 	                        helpQuote = _stockQuote;
 	                        helpATR = ((_ATR/_stockQuote)*100).toFixed(2) + "% (" + _ATR + ")";
 	                        helpReport = getSweDate(body.calendarEvents.earnings.earningsDate[0]);
 	                        
-							self.setState({smaColor: _stockQuote > _sma20 ? "success" : "danger"});
+							self.setState({sma20Color: _stockQuote > _sma20 ? "success" : "danger"});
+							self.setState({sma50Color: _stockQuote > _sma50 ? "success" : "danger"});
 								
 	                        self.setState({helpATR: helpATR, helpReport: helpReport, helpQuote: helpQuote, focus:'stockprice'});
                         }
@@ -636,11 +652,19 @@ console.log("getRate._xrate=", _xrate);
 										</Form>
 
 										<Form inline padding={{vertical:1}}>                                    	
-		                                    <Form.Radio value="radioSMA" checked={this.state.selectedOption === "radioSMA"} onChange={this.handleOptionChange}>
+		                                    <Form.Radio value="radioSMA20" checked={this.state.selectedOption === "radioSMA20"} onChange={this.handleOptionChange}>
 		                                        Släpande under SMA20
 		                                    </Form.Radio>
 		                                    <span className={_stockQuote > _sma20 ? 'badge badge-success' : 'badge badge-danger'} style={{margin: '4px 4px'}}>{_sma20 == 0 ? '-' : _sma20}</span>
 										</Form>
+
+										<Form inline padding={{vertical:1}}>                                    	
+		                                    <Form.Radio value="radioSMA50" checked={this.state.selectedOption === "radioSMA50"} onChange={this.handleOptionChange}>
+		                                        Släpande under SMA50
+		                                    </Form.Radio>
+		                                    <span className={_stockQuote > _sma50 ? 'badge badge-success' : 'badge badge-danger'} style={{margin: '4px 4px'}}>{_sma50 == 0 ? '-' : _sma50}</span>
+										</Form>
+
 										
 	                                    </Card.Body>
 	                                </Card>

@@ -95,6 +95,7 @@ class NagotSomFunkarBattreOmNagotBlirFel extends React.Component {
                 resolve(dates);
 	        })
 	        .catch(error => {
+		        console.log("Error:getDates:", error);
                 reject(error);
 	        })
         });

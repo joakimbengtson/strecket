@@ -139,6 +139,10 @@ export default class extends React.Component {
 			case config.stoplossType.StoplossTypeSMA20:
 				stoplossTxt = stock.sma20 + ' (sma20)';
 				break;
+
+			case config.stoplossType.StoplossTypeSMA50:
+				stoplossTxt = (stock.SMA50).toFixed(2) + ' (sma50)';
+				break;
 				
 			case config.stoplossType.StoplossTypePercent:
 				stoplossTxt = (stock.maxkurs - (stock.maxkurs * stock.stoplossProcent)).toFixed(2) + ' (' + (stock.stoplossProcent * 100).toFixed(2) + '%)';
