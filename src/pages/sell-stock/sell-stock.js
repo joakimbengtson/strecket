@@ -5,6 +5,9 @@ import {Form, Button, Container, Row, Col, Dropdown} from 'react-bootify';
 
 require("./sell-stock.less");
 
+var config = require('../config.js');
+
+
 const ReactDOM = require("react-dom");
 
 var _stockID; 
@@ -36,7 +39,7 @@ export default class Home extends React.Component {
 		_stockQuote = query.get('senaste');
         _stockAmount = query.get('antal');
         
-        this.url = "http://85.24.185.150:3000";
+        this.url = "http://" + config.IP;
         this.api = new Request(this.url);
         
         this.state = {};
@@ -65,7 +68,7 @@ export default class Home extends React.Component {
 		var amount = ReactDOM.findDOMNode(self.refs.sellamount).value;
 
         var options = {
-            uri: "http://85.24.185.150:3000/stocks/" + _stockID + "/date/" + date + "/price/" + price + "/amount/" + amount,
+            uri: "http://" + config.IP + "/stocks/" + _stockID + "/date/" + date + "/price/" + price + "/amount/" + amount,
             method: "DELETE",
             timeout: 3000,
             json: true,

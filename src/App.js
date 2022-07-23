@@ -7,6 +7,7 @@ import Looker from './pages/looker/looker.js';
 import SellStock from './pages/sell-stock/sell-stock.js';
 import Evaluate from './pages/evaluate/evaluate.js';
 import NewStock from './pages/new-stock/new-stock.js';
+import Candle from './pages/candle/candle.js';
 
 export default class App extends React.Component {
 
@@ -20,6 +21,7 @@ export default class App extends React.Component {
 					<Route path="/sell-stock" component={SellStock}/>
 					<Route path="/evaluate" component={Evaluate}/>
 					<Route path="/new-stock" component={NewStock}/>
+					<Route path="/candle" component={Candle}/>
 				</Switch>
 			</HashRouter>			
 		);

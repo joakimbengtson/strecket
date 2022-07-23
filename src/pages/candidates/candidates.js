@@ -115,7 +115,7 @@ export default class Home extends React.Component {
 	        var request = require("client-request");
 	
 	        var options = {
-	            uri: "http://85.24.185.150:3000/sectors",
+	            uri: "http://" + config.IP + "/sectors",
 	            method: "GET",
 	            json: true,
 	            headers: {

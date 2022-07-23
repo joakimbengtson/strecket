@@ -22,24 +22,19 @@ RenderBar.propTypes = {
 };
 
 
-function dayDiffPosix(UNIX_timestamp) {
-    var dt1 = new Date(UNIX_timestamp * 1000);
-    var dt2 = new Date();
-    
-    if (UNIX_timestamp == null) return "n/a";    
-    
-    return Math.floor((Date.UTC(dt1.getFullYear(), dt1.getMonth(), dt1.getDate()) - Date.UTC(dt2.getFullYear(), dt2.getMonth(), dt2.getDate())) / (1000 * 60 * 60 * 24));
-}
-
-
 function dayDiff(d) {
     var dt1 = new Date(d);
     var dt2 = new Date();
     
     
-    if (d == null) return "n/a";    
+    if (d == null) return "n/a"; 
     
-    return Math.floor((Date.UTC(dt2.getFullYear(), dt2.getMonth(), dt2.getDate()) - Date.UTC(dt1.getFullYear(), dt1.getMonth(), dt1.getDate())) / (1000 * 60 * 60 * 24));
+    var differenceInTime = dt2.getTime() - dt1.getTime();
+    
+    var differenceInDays = differenceInTime / 86400000; // 1000 * 60 * 60 * 24
+    
+    return Math.floor(differenceInDays);
+    
 }
 
 function pad(n) {
@@ -47,15 +42,16 @@ function pad(n) {
 }
 
 // Format date to: YYMMDD
-function getSweDate(UNIX_timestamp) {
-    var a = new Date(UNIX_timestamp * 1000);
-    var year = a.getFullYear();
-    var month = a.getMonth() + 1;
-    var date = a.getDate();
+function getSweDate(isoDate) {
+	var a = new Date(isoDate);
 
-    if (UNIX_timestamp == null) return "n/a";
+    if (isoDate == null) return "n/a";
 
-    var time = year.toString().substr(-2) + pad(month) + pad(date);
+	var year  = a.getFullYear();
+	var month = a.getMonth()+1;
+	var dt    = a.getDate();
+	
+    var time = year.toString().substr(-2) + pad(month) + pad(dt);
 
     return time;
 }
@@ -79,7 +75,7 @@ export default class extends React.Component {
         var request = require("client-request");
 
         var options = {
-            uri: "http://85.24.185.150:3000/stocks",
+            uri: "http://" + config.IP + "/stocks",
             method: "GET",
             json: true,
             headers: {
@@ -170,7 +166,7 @@ export default class extends React.Component {
 
         var items = this.state.stocks.map(function(stock, index) {
             if (stock.antal > 0) {
-				earningsDateDiff = dayDiffPosix(stock.earningsDate[0]);	            
+				earningsDateDiff = dayDiff(stock.earningsDate[0]);	            
                 return (
                     <tr key={index}>
                         <td>
@@ -258,9 +254,7 @@ export default class extends React.Component {
                             </td>
                         )}
 
-                        {(earningsDateDiff == "n/a" || earningsDateDiff >= 5) ? (
-							<td>{getSweDate(stock.earningsDate[0])}</td>
-                        ) : earningsDateDiff < 0 ? (
+                        {(earningsDateDiff == "n/a" || earningsDateDiff < -5) ? (
 							<td style={{color: "gray"}}>{getSweDate(stock.earningsDate[0])}</td>
                         ) : (
 							<td style={{color: "red"}}>{getSweDate(stock.earningsDate[0])}</td>
@@ -286,7 +280,7 @@ export default class extends React.Component {
                     <tr key={index}>
                         <td>{stock.namn}</td>
                         <td style={{textAlign: "right"}}>{parseFloat(stock.senaste).toFixed(2)}</td>
-				<td style={{textAlign: "center"}}><Sparklines data={stock.quotes} width={130} height={25} svgWidth={130} svgHeight={30} margin={0}><SparklinesLine color="LightSkyBlue" /></Sparklines></td>
+				<td style={{textAlign: "center"}}><Sparklines data={stock.quotes.reverse()} width={130} height={25} svgWidth={130} svgHeight={30} margin={0}><SparklinesLine color="LightSkyBlue" /></Sparklines></td>
                         <td style={self.getColor(parseFloat((1 - stock.sma50 / stock.senaste) * 100).toFixed(2))}>{}</td>
                         <td style={self.getColor(parseFloat((1 - stock.sma200 / stock.senaste) * 100).toFixed(2))}>{}</td>
                     </tr>
@@ -356,14 +350,6 @@ export default class extends React.Component {
         );
     }
 
-	xrender() {
-		console.log('Rendering HEJ');
-		return (
-			<h1>
-				HEJ
-			</h1>
-		);
-	}
     render() {
         return (
             <div id="home">
@@ -394,7 +380,11 @@ export default class extends React.Component {
                         <Button margin={{left:1, right:1}} className="btn-danger" size="lg" href="#looker">
                             Leta
                         </Button>
-                        
+                        <span>{' '}</span>
+                        <Button margin={{left:1, right:1}} className="btn-info" size="lg" href="#candle">
+                            Candles
+                        </Button>
+                                                
                     </Container.Row>
                 </Container>
             </div>

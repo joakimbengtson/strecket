@@ -6,6 +6,9 @@ import Request from "yow/request";
 
 require("./looker.less");
 
+var config = require('../config.js');
+
+
 const increaseLimit = 0.10; // Hur många procent den måste öka varje kvartal
 
 export default  class Home extends React.Component {
@@ -24,7 +27,7 @@ export default  class Home extends React.Component {
     fetch(symbol) {
         return new Promise((resolve, reject) => {
 
-            var request = new Request("http://85.24.185.150:3000");
+            var request = new Request("http://" + config.IP);
 
             request
                 .get("/rawdump/" + symbol)
@@ -41,7 +44,7 @@ export default  class Home extends React.Component {
         
     componentDidMount() {
         var self = this;
-        var request = new Request('http://85.24.185.150:3000');
+        var request = new Request('http://' + config.IP);
         var query = {};
         var stocks;
         

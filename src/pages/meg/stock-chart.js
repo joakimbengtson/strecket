@@ -9,6 +9,8 @@ import Request from 'yow/request';
 import sprintf from 'yow/sprintf';
 import InfoBox from './info-box.js';
 
+var config = require('../config.js');
+
 Indicators(Highcharts);
 
 export default class StockChart extends React.Component {
@@ -33,7 +35,7 @@ export default class StockChart extends React.Component {
 
     generate() {
         // Deklarera en request som går direkt till Munch (slipper då MySQL-anrop)
-        var request = new Request('http://85.24.185.150:3000');
+        var request = new Request('http://' + config.IP);
 
         // Nu och då
         var now = new Date();

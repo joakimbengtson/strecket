@@ -30,18 +30,21 @@ function pad(n) {
 }
 
 
-function getSweDate(UNIX_timestamp) {
-    var a = new Date(UNIX_timestamp * 1000); 
-    var year = a.getFullYear();
-    var month = a.getMonth() + 1;
-    var date = a.getDate();
+// Format date to: YYMMDD
+function getSweDate(isoDate) {
+	var a = new Date(isoDate);
 
-    if (UNIX_timestamp == null) return "n/a";
+    if (isoDate == null) return "n/a";
 
-    var time = year.toString().substr(-2) + pad(month) + pad(date);
+	var year  = a.getFullYear();
+	var month = a.getMonth()+1;
+	var dt    = a.getDate();
+	
+    var time = year.toString().substr(-2) + pad(month) + pad(dt);
 
     return time;
 }
+
 
 function roundUp(num, precision) {
 	num = parseFloat(num);
@@ -98,7 +101,8 @@ export default class extends React.Component {
         this.handleKeyPress = this.handleKeyPress.bind(this);
         this.handleOptionChange = this.handleOptionChange.bind(this);
         
-        this.state = {focus:'stockticker', helpATR: "", helpReport: "", helpPercentage: "", helpQuote: "", title: "Ange källa", selectedOption: "radioATR", sourceID: null, sources: [], inputs:{}, sma20Color:"light", sma50Color:"light", showAlert: false};
+        this.state = {focus:'stockticker', helpATR: "", helpReport: "", helpPercentage: "", helpQuote: "", title: "Ange källa", selectedOption: "radioATR", sourceID: null, sources: [], inputs:{}, showAlert: false};
+//        this.state = {focus:'stockticker', helpATR: "", helpReport: "", helpPercentage: "", helpQuote: "", title: "Ange källa", selectedOption: "radioATR", sourceID: null, sources: [], inputs:{}, sma20Color:"light", sma50Color:"light", showAlert: false};
     }
 
 	componentDidMount() {
@@ -108,9 +112,12 @@ export default class extends React.Component {
         var helpQuote = "";
         var sourceText;
         var request = require("client-request");
-
+        
+        _sma20 = 0;
+        _sma50 = 0;
+        
         var options = {
-            uri: "http://85.24.185.150:3000/sources",
+            uri: "http://" + config.IP + "/sources",
             method: "GET",
             json: true,
             headers: {
@@ -132,7 +139,7 @@ export default class extends React.Component {
 		        if (_stockID != undefined) {
 		
 		            options = {
-		                uri: "http://85.24.185.150:3000/stock/" + _stockID,
+		                uri: "http://" + config.IP + "/stock/" + _stockID,
 		                method: "GET",
 		                json: true,
 		                headers: {
@@ -264,7 +271,7 @@ export default class extends React.Component {
         rec.SMA50 = _sma50;
 
         var options = {
-            uri: "http://85.24.185.150:3000/save",
+            uri: "http://" + config.IP + "/save",
             method: "POST",
             body: rec,
             timeout: 3000,
@@ -383,9 +390,11 @@ export default class extends React.Component {
 
             var request = require("client-request");
             var ticker = target.currentTarget.value;
+            
+            console.log("Hämtar:", ticker);
 
             var options = {
-                uri: "http://85.24.185.150:3000/company/" + ticker,
+                uri: "http://" + config.IP + "/company/" + ticker,
                 method: "GET",
                 timeout: 1000,
                 json: true,
@@ -435,8 +444,8 @@ export default class extends React.Component {
 	                        helpATR = ((_ATR/_stockQuote)*100).toFixed(2) + "% (" + _ATR + ")";
 	                        helpReport = getSweDate(body.calendarEvents.earnings.earningsDate[0]);
 	                        
-							self.setState({sma20Color: _stockQuote > _sma20 ? "success" : "danger"});
-							self.setState({sma50Color: _stockQuote > _sma50 ? "success" : "danger"});
+//							self.setState({sma20Color: _stockQuote > _sma20 ? "success" : "danger"});
+//							self.setState({sma50Color: _stockQuote > _sma50 ? "success" : "danger"});
 								
 	                        self.setState({helpATR: helpATR, helpReport: helpReport, helpQuote: helpQuote, focus:'stockprice'});
                         }
@@ -444,6 +453,9 @@ export default class extends React.Component {
 	                    	self.setState({showAlert: true});
                         }
                     }
+                }
+                else {
+					console.log("Fel: http://" + config.IP + "/company/", err);	                
                 }
             });
         }
@@ -652,14 +664,14 @@ console.log("getRate._xrate=", _xrate);
 										</Form>
 
 										<Form inline padding={{vertical:1}}>                                    	
-		                                    <Form.Radio value="radioSMA20" checked={this.state.selectedOption === "radioSMA20"} onChange={this.handleOptionChange}>
+		                                    <Form.Radio value="radioSMA20" checked={this.state.selectedOption === "radioSMA20"} onChange={this.handleOptionChange} disabled={_stockQuote<_sma20}>
 		                                        Släpande under SMA20
 		                                    </Form.Radio>
 		                                    <span className={_stockQuote > _sma20 ? 'badge badge-success' : 'badge badge-danger'} style={{margin: '4px 4px'}}>{_sma20 == 0 ? '-' : _sma20}</span>
 										</Form>
 
 										<Form inline padding={{vertical:1}}>                                    	
-		                                    <Form.Radio value="radioSMA50" checked={this.state.selectedOption === "radioSMA50"} onChange={this.handleOptionChange}>
+		                                    <Form.Radio value="radioSMA50" checked={this.state.selectedOption === "radioSMA50"} onChange={this.handleOptionChange} disabled={_stockQuote<_sma50}>
 		                                        Släpande under SMA50
 		                                    </Form.Radio>
 		                                    <span className={_stockQuote > _sma50 ? 'badge badge-success' : 'badge badge-danger'} style={{margin: '4px 4px'}}>{_sma50 == 0 ? '-' : _sma50}</span>

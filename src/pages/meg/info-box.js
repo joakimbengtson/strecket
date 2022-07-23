@@ -7,6 +7,8 @@ import {Table, Alert, Spinner, Form, Checkbox, Button} from "react-bootify";
 import Request from "yow/request";
 import sprintf from "yow/sprintf";
 
+var config = require('../config.js');
+
 export default class InfoBox extends React.Component {
 	
     constructor(args) {
@@ -36,7 +38,7 @@ export default class InfoBox extends React.Component {
 
     fetch() {
         return new Promise((resolve, reject) => {
-            var request = new Request("http://85.24.185.150:3000");
+            var request = new Request("http://" + config.IP);
 
             request
                 .get("/rawdump/" + this.props.symbol)

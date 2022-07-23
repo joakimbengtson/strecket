@@ -14,3 +14,5 @@ config.rates = {
 	rateEUR : 1
 }
 
+config.IP = "5.150.248.165:3000";
+

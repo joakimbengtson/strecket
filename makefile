@@ -5,7 +5,7 @@ GITHUB_COMMIT_MESSAGE=-
 
 SCP_PATH=/var/www/html/strecket
 SCP_USER=root
-SCP_HOST=85.24.185.150
+SCP_HOST=5.150.248.165
 
 all:
 	@echo Specify something

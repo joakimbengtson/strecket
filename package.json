@@ -2,23 +2,24 @@
   "name": "strecket",
   "version": "0.1.0",
   "private": true,
-  "homepage": "http://85.24.185.150/strecket/",
+  "homepage": "http://5.150.248.165/strecket/",
   "dependencies": {
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1",
-    "react-scripts": "4.0.1",
-    "web-vitals": "^0.2.4",
     "client-request": "^1.1.0",
     "highcharts": "^8.2.2",
     "highcharts-react-official": "^3.0.0",
+    "mathjs": "^10.1.0",
     "moment": "^2.29.1",
+    "react": "^17.0.1",
     "react-bootify": "0.0.274",
     "react-confirm-alert": "^2.6.2",
+    "react-dom": "^17.0.1",
     "react-router-dom": "^5.2.0",
+    "react-scripts": "4.0.1",
     "react-sparklines": "^1.7.0",
     "react-spinkit": "^1.1.10",
     "recharts": "^1.8.5",
     "rest-request": "^1.0.10",
+    "web-vitals": "^0.2.4",
     "yahoo-finance": "^0.2.14",
     "yow": "^1.0.108"
   },
@@ -26,7 +27,7 @@
     "start": "make react-start",
     "build": "make react-build",
     "commit": "make git-commit",
-    "deploy": "scp -r ./build/* root@85.24.185.150:/var/www/html/strecket"
+    "deploy": "scp -r ./build/* root@5.150.248.165:/var/www/html/strecket"
   },
   "eslintConfig": {
     "extends": [

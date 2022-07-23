@@ -54,7 +54,7 @@ export default class Home extends React.Component {
         var request = require("client-request");
 
         var options = {
-            uri: "http://85.24.185.150:3000/sold_stocks",
+            uri: "http://" + config.IP + "/sold_stocks",
             method: "GET",
             json: true,
             headers: {

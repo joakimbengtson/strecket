@@ -6,6 +6,9 @@ import {Sparklines, SparklinesLine, SparklinesReferenceLine, SparklinesBars} fro
 
 require('./meg.css');
 
+var config = require('../config.js');
+
+
 var _descr1;
 
 
@@ -40,7 +43,7 @@ class NagotSomFunkarBattreOmNagotBlirFel extends React.Component {
 
 	getMMTH() {
         return new Promise((resolve, reject) => {
-	        var request = new Request('http://85.24.185.150:3000');
+	        var request = new Request('http://' + config.IP);
 	        var query = {};
 	        
 	        query.sql = 'SELECT truncate(count(*)/(select count(*) from stocks)*100, 0) as mmth FROM stockquotes INNER JOIN stocks ON stocks.symbol = stockquotes.symbol where stockquotes.date=? and stockquotes.close > stocks.sma200';
@@ -59,7 +62,7 @@ class NagotSomFunkarBattreOmNagotBlirFel extends React.Component {
 	
 	getSectors() {
         return new Promise((resolve, reject) => {
-	        var request = new Request('http://85.24.185.150:3000');
+	        var request = new Request('http://' + config.IP);
 	        var query = {};
 	        var sectors = [];
 	        
@@ -80,7 +83,7 @@ class NagotSomFunkarBattreOmNagotBlirFel extends React.Component {
 
 	getDates() {
         return new Promise((resolve, reject) => {
-	        var request = new Request('http://85.24.185.150:3000');
+	        var request = new Request('http://' + config.IP);
 	        var query = {};
 	        var dates = [];
 
@@ -106,7 +109,7 @@ class NagotSomFunkarBattreOmNagotBlirFel extends React.Component {
 	        var request = require("client-request");
 	
 	        var options = {
-	            uri: "http://85.24.185.150:3000/fearandgreed",
+	            uri: "http://" + config.IP + "/fearandgreed",
 	            method: "GET",
 	            json: true,
 	            headers: {
@@ -129,7 +132,7 @@ class NagotSomFunkarBattreOmNagotBlirFel extends React.Component {
 
 	getSpikes() {  
         return new Promise((resolve, reject) => {
-	        var request = new Request('http://85.24.185.150:3000');
+	        var request = new Request('http://' + config.IP);
 	        var query = {};
 	        var spikes = [];
 	        
